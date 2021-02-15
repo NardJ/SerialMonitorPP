@@ -11,6 +11,12 @@ SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provide
 ### Main window
 ![Main Window](/images/format.png)
 
+### Required modules
+- tkinter
+- tooltip
+- serial
+- re
+
 ### Decimal
 ![Decimal](/images/dec.png)
 
