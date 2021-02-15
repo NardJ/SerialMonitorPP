@@ -16,14 +16,9 @@ SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provide
 - Run with command: ```>python3 SerialMonitor++.py```
 ---
 
-### Decimal
-![Decimal](/images/dec.png)
-
-### Hex
-![Hex](/images/hex.png)
-
-### Click on message
-![Hex](/images/allrepresentations.png)
+### Hex/Dec/Ascii
+You can display the entire message log in ascii, decimal, hex, but you can also display a single message in all representations by clicking on it.
+![Hex](/images/representations.png)
 
 ### Other line endings
 ![Hex](/images/lineending.png)
