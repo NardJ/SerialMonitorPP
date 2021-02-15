@@ -20,9 +20,16 @@ SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provide
 You can display the entire message log in ascii, decimal, hex, but you can also display a single message in all representations by clicking on it.
 ![Hex](/images/representations.png)
 
-### Other line endings
+### Sending messages
+You can send a message by entering it in the text box at the top of SerialMonitor++ and clicking on the Send button. You can select how your message if you want to automatically close your message with a new-line character (NL), a carriage return (CR), both (CR & NL) of with a string end character.
+
+If you want to send a previous message, click the up-key in the text box to browse through your history.
+
+If you want quick access to a send message, long click on one of the buttons to save it. After this a short click on the button resends it.
+
 ![Hex](/images/lineending.png)
 
 ### Script Engine
+For multiline messages, or maybe want to send different messages depending on a received message, you can load/run a script using the 
 ![Hex](/images/scriptengine.png)
 
