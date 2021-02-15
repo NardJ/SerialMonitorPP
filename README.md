@@ -10,9 +10,11 @@ SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provide
 
 ### Main window
 ![Main Window](/images/format.png)
-### Required python modules
-To run SerialMonitor++ you have to install Python3 and the following modules:
-- pyserial
+### How to run
+- Install python 3
+- Install module pyserial (```>pip3 install pyserial```)
+- Run with command ```python3 SerialMonitor++.py```
+---
 
 ### Decimal
 ![Decimal](/images/dec.png)
