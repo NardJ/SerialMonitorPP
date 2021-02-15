@@ -1,0 +1,33 @@
+######################################################################
+# Press [Help] for more info about this scripting language.							   #
+#								     #
+# For SerialMonitor++ two extra commands are implemented:							     #
+#   send [message]	: Lets you send a message over Serial							     #
+#   received()	    : Containts last received message from Serial			  #
+#====================================================================#
+# To test setup your arduino board to echo all serial								     #
+#   void setup() {								     #
+#     Serial.begin(9600);								     #
+#  }							             #
+#  void loop() {								     #
+#    if(Serial.available() > 0) Serial.write(Serial.read());         #
+#  }								     #
+#====================================================================#
+# Press on run and the received text should appear in  					         #
+# the status field above and in the main window.								     #
+######################################################################
+
+send ('Hello World')
+print received()
+
+
+
+
+
+
+
+
+
+
+
+
