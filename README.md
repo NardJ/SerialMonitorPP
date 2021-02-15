@@ -16,9 +16,11 @@ SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provide
 - Run with command: ```>python3 SerialMonitor++.py```
 ---
 
-### Hex/Dec/Ascii
+### Log messages
 You can display the entire message log in ascii, decimal, hex, but you can also display a single message in all representations by clicking on it.
 ![Hex](/images/representations.png)
+With the buttons below the log you can specify if you want to scroll the log if the messages exceed the page height, add timestamps, display/hide your sent messages, put extra separation between received messages which are more than 1 sec apart, turn on/off wrap and clear the log.
+![formatlog](/images/formatlog.png)
 
 ### Sending messages
 You can send a message by entering it in the text box at the top of SerialMonitor++ and clicking on the Send button. 
@@ -39,4 +41,5 @@ For multiline messages, or maybe want to send different messages depending on a 
 Your script will be run, if errors were encountered you can find them in the second tab. You can edit, save or reload the script. If you want a delay between each  scriptline you can specify one using pulldown button at the bottom.
 ![scriptbutton](/images/scriptengine.png)
 
+### Autoconnect
 
