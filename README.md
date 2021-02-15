@@ -21,16 +21,21 @@ You can display the entire message log in ascii, decimal, hex, but you can also 
 ![Hex](/images/representations.png)
 
 ### Sending messages
-You can send a message by entering it in the text box at the top of SerialMonitor++ and clicking on the Send button. You can select how your message if you want to automatically close your message with a new-line character (NL), a carriage return (CR), both (CR & NL) of with a string end character.
+You can send a message by entering it in the text box at the top of SerialMonitor++ and clicking on the Send button. 
 ![sendfield](/images/sendfield.png)
 If you want to send a previous message, click the up-key in the text box to browse through your history.
 
-![sendbutton](/images/sendbutton.png)
-If you want quick access to a send message, long click on one of the buttons to save it. After this a short click on the button resends it.
+You can specify if you want to automatically close your message with a new-line character (NL), a carriage return (CR), both (CR & NL) of with a string end character.
+![lineending](/images/lineendbutton.png)
 
-![Hex](/images/lineending.png)
+If you want quick access to a send message, long click on one of the buttons to save it. After this a short click on the button resends it.
+![sendbutton](/images/sendbutton.png)
+
 
 ### Script Engine
-For multiline messages, or maybe want to send different messages depending on a received message, you can load/run a script using the 
-![Hex](/images/scriptengine.png)
+For multiline messages, or maybe want to send different messages depending on a received message, you can load/run a script using the script button.
+![scriptbutton](/images/scriptbutton.png)
 
+Your script will be run, if errors were encountered you can find them in the second tab.
+![scriptbutton](/images/scriptengine.png)
+You can insert a delay between the scriptlines by using the delay pulldown button at the bottom.
