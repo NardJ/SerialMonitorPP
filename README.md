@@ -26,7 +26,7 @@ You can send a message by entering it in the text box at the top of SerialMonito
 If you want to send a previous message, click the up-key in the text box to browse through your history.
 
 You can specify if you want to automatically close your message with a new-line character (NL), a carriage return (CR), both (CR & NL) of with a string end character.
-![lineending](/images/lineendbutton.png)
+![lineendbutton](/images/lineendbutton.png)
 
 If you want quick access to a send message, long click on one of the buttons to save it. After this a short click on the button resends it.
 ![sendbutton](/images/sendbutton.png)
