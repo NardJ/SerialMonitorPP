@@ -1,8 +1,8 @@
 # SerialMonitor++
 
-SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provides. It comes with:
-- display log in ascii, hex, dec or auto (text when possible and else binary)
-- also include messages you sent in log besides the received messages 
+SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provides. It comes with the following extra features:
+- display message log in ascii, hex, dec or auto (text when possible and else binary)
+- include messages you sent in log besides the received messages 
 - click on message to show ascii, hex and dec representations of message
 - auto search and connect to serial device on start and auto reconnect if connection interrupted
 - buttons to store often send messages
@@ -10,7 +10,6 @@ SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provide
 
 ### Main window
 ![Main Window](/images/format.png)
-
 ### Required modules
 - tkinter
 - tooltip
