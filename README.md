@@ -36,6 +36,7 @@ If you want quick access to a send message, long click on one of the buttons to 
 For multiline messages, or maybe want to send different messages depending on a received message, you can load/run a script using the script button.
 ![scriptbutton](/images/scriptbutton.png)
 
-Your script will be run, if errors were encountered you can find them in the second tab.
+Your script will be run, if errors were encountered you can find them in the second tab. You can edit, save or reload the script. If you want a delay between each  scriptline you can specify one using pulldown button at the bottom.
 ![scriptbutton](/images/scriptengine.png)
-You can insert a delay between the scriptlines by using the delay pulldown button at the bottom.
+
+
