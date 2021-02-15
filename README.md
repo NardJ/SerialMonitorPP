@@ -43,4 +43,6 @@ Your script will be run, if errors were encountered you can find them in the sec
 ![scriptbutton](/images/scriptengine.png)
 
 ### Autoconnect
+In the statusbar below the window, you can specify the connection port, the communication speed, connect/disconnect and specify if you want to autoconnect on start and after a connection interruption.
+![scriptbutton](/images/scriptbutton.png)
 
