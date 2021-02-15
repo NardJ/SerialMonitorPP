@@ -14,6 +14,7 @@ SerialMonitor++ is meant as a better Serial Monitor than the Arduino IDE provide
 - Install python 3: https://www.python.org/downloads/
 - Install module pyserial: ```>pip3 install pyserial```
 - Run with command: ```>python3 SerialMonitor++.py```
+
 ---
 
 ### Log messages
@@ -22,6 +23,8 @@ With the buttons below the log you can specify if you want to scroll the log if 
 
 With the format pulldown list you can display the entire message log in ascii, decimal, hex, but you can also display a single message in all representations by clicking on the message in the log.
 ![Hex](/images/representations.png)
+
+---
 
 ### Sending messages
 You can send a message by entering it in the text box at the top of SerialMonitor++ and clicking on the Send button. 
@@ -34,6 +37,7 @@ You can specify if you want to automatically close your message with a new-line 
 If you want quick access to a send message, long click on one of the buttons to save it. After this a short click on the button resends it.
 ![sendbutton](/images/sendbutton.png)
 
+---
 
 ### Script Engine
 For multiline messages, or maybe want to send different messages depending on a received message, you can load/run a script using the script button.
@@ -42,7 +46,9 @@ For multiline messages, or maybe want to send different messages depending on a 
 Your script will be run, if errors were encountered you can find them in the second tab. You can edit, save or reload the script. If you want a delay between each  scriptline you can specify one using pulldown button at the bottom.
 ![scriptbutton](/images/scriptengine.png)
 
-### Autoconnect
+---
+
+### Connection
 In the statusbar below the window, you can specify the connection port, the communication speed, connect/disconnect and specify if you want to autoconnect on start and after a connection interruption.
 ![scriptbutton](/images/scriptbutton.png)
 
