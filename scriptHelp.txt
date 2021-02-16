@@ -1,0 +1,224 @@
+<family:Verdana>
+<center><h1><u>PyInterpreter</u></h1></center>
+
+PyInterpreter is a simple script interpreter written in python. All tokens must be seperated
+by spaces, except for tokens within expressions (calculations). String values should be enclosed 
+between double quotes (") and can be formatted with python3 f-formatting syntax, e.g. 
+`f"The number is {nr}."` All python3 math functions are available for expressions e.g. 
+`a = 3+math.sin(math.pi/2)`. Expressions and strings can be enclosed in parentheses '(', ')'
+
+The script resembles javascript a bit, for example:
+<code>
+ _______________________________________________________________
+|  # This is a comment                                          |
+|                                                               |
+|  print ("Hello World!")                                       | 
+|                                                               |
+|  var firstName = "John"                                       |
+|  var lastName = "Smith"                                       |
+|  print (f"\nMy name is {firstName} {lastName}")               |
+|                                                               |
+|  print ("\nWatch me count even numbers between 0 and 10:")    |
+|  for x = 0 ... 10 : 2 {                                       |
+|    gosub showNumber                                           |
+|  }                                                            |
+|                                                               |
+|  sub showNumber                                               |
+|    print (f"  {x}")                                           |
+|  return                                                       |
+|_______________________________________________________________|
+</code>
+It is possible to create functions, however passing variables is not (yet) implemented.
+
+<hr>
+</hr>
+
+<H2>Usage</H2>
+
+1) Copy PyInterpreter.py to your project
+
+2) Import it into your main projectfile
+    <codei> Import PyInterpreter </codei>
+
+3) If you want to add function use <b><i>addSystemFunction</i></b>.
+    First argument is call name, second is python function, this is list of allowed types for each 
+    argument the function takes.
+    <codei> PyInterpreter.addSystemFunction("sleep",time.sleep,[(int,float),]) </codei>
+
+4) If you want to add variables use <b><i>addSystemVar</i></b>.
+    <codei> PyInterpreter.addSystemVar("pi", math,pi) </codei>
+
+5) Run script with <b><i>setScript</i></b>/<b><i>loadScript</i></b> and <b><i>runScript</i></b> 
+    or only <b><i>runScript</i></b>. 
+    loadScript returns a list of strings where each string is a line from the loaded file.
+    runScript returns False if errors were encountered and True if script ran successfull.
+    <codei> PyInterpreter.setScript(["var a 0\nprint a\n"]) </codei>
+    <codei> PyInterpreter.runScript()                       </codei>
+    <b>or</b>
+    <codei> PyInterpreter.loadScript("myscript.pyi") </codei>
+    <codei> PyInterpreter.runScript()                </codei>
+    <b>or</b>
+    <codei> PyInterpreter.runScript("myscript.pyi") </codei>
+
+6) After loading script, the script can be rerun with <b><i>runScript()</i></b> without arguments. 
+    Beforehand system variables can be set or changed with <b><i>addSystemVar</i></b>. 
+    <codei> PyInterpreter.addSystemVar("pi", 3.2) </codei>
+    <codei> PyInterpreter.runScript()             </codei>
+
+7) To specifiy a custom error handler use <b><i>setErrorHandler</i></b>.
+    <codei> def myHndlr(errStack):                 </codei>
+    <codei>    print (errorStack)                  </codei>
+    <codei> pyInterpreter.setErrorHandler(myHndlr) </codei>
+
+<hr>
+</hr>
+  
+<h2>Core allowed statements</h2>
+
+The script language only consists of the following allowed statements:<code>
+ ______________________________________________________________________________________________________
+| <b>Syntax</b>                 | <b>Example</b>       | <b>Description</b>                                                 | 
+|________________________|_______________|_____________________________________________________________|
+| # comment              | # comment     | lines starting with # are considered comments               |
+| statement # comment    | a 1 # comment | comments can also start mid sentence                        |
+|                        |               |                                                             |
+| var vName value/calc   | var a 1       | create variable with name vName and initialize  with        |
+|                        |               |    literal (int/float/string) or expression                 |
+| vName calculation      | var b 1+a     | assignement of literal or expression to variable vName      |
+| if condition lineNr    | if a 7        | if condition (literal/variable/expression) is true jump to  |
+|                        |               |    line lineNr                                              | 
+|                        |               |                                                             |
+| label lName            | label part2   | make an alias lName for current line number                 |
+| goto lName / lineNr    | goto part2    | go to line number associated with alias lName               |
+|                        |               |                                                             |
+| sub lName              | sub myfunc1   | same as label                                               |
+| gosub lName / lineNr   | gosub myfunc1 | same as goto, but put current line number on callStack      |
+| return                 | return        | set line number to last added line number put on callStack  |
+|                        |               |                                                             |
+| exit                   | exit          | stop interpreter                                            |
+|________________________|_______________|_____________________________________________________________|
+</code>
+Several statements on one line can be seperated with ';' but this is not encouraged and mainly used for 
+internally rewriting macro's
+
+<hr>
+</hr>
+
+<h2>Macro statements</h2>
+
+Also multiline <b><i>if</b></i>/<b><i>for</b></i>/<b><i>while</b></i> statements are possible, because 
+they are rewritten to core statements. All multiline macro statements can be nested.
+
+<h3><b>If</b></h3><code>
+ ___________________________________________________________
+| <b>Line</b> | <b>Macro statement</b>        | <b>Core statement</b>            |
+|------|------------------------|---------------------------|
+| 1    | if cond {              |  if not(cond) goto 4      |
+| 2    |   ...                  |    ...                    |
+| 3    | }else{                 |  goto 5                   |
+| 4    |   ...                  |    ...                    |
+| 5    | }                      |                           |
+|______|________________________|___________________________|
+</code>
+Variable in for-loop does not have to be defined beforehand
+
+<h3><b>For</b></h3><code>
+ ___________________________________________________________
+| <b>Line</b> | <b>Macro statement</b>        | <b>Core statement</b>            |
+|------|------------------------|---------------------------|
+| 1    | for i 4 10 2 {`        | var i 4                   |
+| 2    |   ...                  |   ...                     |
+| 3    | }                      | i i+2 ; if i<10 goto 1    |
+|______|________________________|___________________________|
+</code>
+
+<h3><b>While</b></h3><code>
+ ___________________________________________________________
+| <b>Line</b> | <b>Macro statement</b>        | <b>Core statement</b>            |
+|------|------------------------|---------------------------|
+| 1    | while cond {           | if not(cond) goto 3       |
+| 2    |   ...                  |   ...                     |
+| 3    | }                      | if cond goto 1            |
+|______|________________________|___________________________|
+</code>
+
+<hr>
+</hr>
+
+<h2>System functions without output</h2>
+
+In your python project you can define or modify an internal functions using <b><i>addSystemFunction</b></i> to call 
+upon in your script. On start only 'print' is prefined.
+
+<b>Syntax:</b>
+    <codei> addSystemFunction(name,function,param typelist)                              </codei>
+
+<b>Example:</b>
+    Python project:
+    <codei> import PyInterpreter                                                         </codei>  
+    <codei> PyInterpreter .addSystemFunction("print", print, [(int,float,bool,string),]) </codei> 
+
+    Script: 
+    <code> print "test" </code>
+
+<hr>
+</hr>
+
+<h2>System functions with output</h2>
+
+In your python project you can link to local functions using <b><i>importSystemFunction</b></i> to call upon 
+in your script. 
+
+<b>Syntax:</b>
+    <codei> importSystemFunction(pyInterpreterName,projectName,projectLocalFunction)     </codei>
+
+<b>Example:</b>
+    Python project:
+    <codei> import PyInterpreter                                                         </codei>  
+    <codei> def received():                                                              </codei>  
+    <codei>     return "test"                                                            </codei>  
+    <codei> PyInterpreter.importSystemFunction(pyi,__name__,received)                    </codei>  
+
+    Script: 
+    <code> print received() </code>
+
+<hr>
+</hr>
+
+<h2>System variables</h2>
+
+It is also possible to define or modify internal variables using <b><i>addSystemVar</b></i> to be available 
+within the script. On start only 'version' is predefined.
+
+<b>Syntax:</b>
+    <codei> addSystemVar(name,val)                                                       </codei>  
+
+<b>Example:</b>
+    Python project:
+    <codei> import PyInterpreter                                                         </codei>  
+    <codei> PyInterpreter.addSystemVar ("version", "09.02.21")`                          </codei>  
+
+    Script: 
+    <code> print version </code>
+
+<hr>
+</hr>
+
+<h2>Allowed free formatting</h2>
+
+Some characters are ignored and can be used to make your script more readable:
+- single equal signs '=' e.g. var assignement:
+<code>
+    var b = 1
+    b = 2
+</code>
+- triple points '...' and colon ':' e.g. for statement:
+<code>
+    for i = 4 ... 10 : 2 {        
+</code>
+- calculations and strings can be enclosed in parentheses '(', ')'.
+<code>
+    var a = (1+2*3)
+    print (a)
+</code>
+</family>
