@@ -29,6 +29,7 @@ With the format pulldown list you can display the entire message log in ascii, d
 ### Sending messages
 You can send a message by entering it in the text box at the top of SerialMonitor++ and clicking on the Send button. 
 ![sendfield](/images/sendfield.png)
+
 If you want to send a previous message, click the up-key in the text box to browse through your history.
 
 You can specify if you want to automatically close your message with a new-line character (NL), a carriage return (CR), both (CR & NL) of with a string end character.
