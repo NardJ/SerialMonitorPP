@@ -867,7 +867,7 @@ def popup_ScriptProcess(event=None):
         msgbox=popup_ShowMessage(type="info",title="Script finished", message=f"Script '{popupWait.scriptname}' finished in {scriptDuration:.4f} seconds!")
 
     if runSuccess and not isProcessingScript:
-        msgbox=popup_ShowMessage(type="info",title="Script stopped", message=f"Script '{popupWait.scriptname}' interupted after {scriptDuration:.4f} seconds!")
+        msgbox=popup_ShowMessage(type="warning",title="Script stopped", message=f"Script '{popupWait.scriptname}' interupted after {scriptDuration:.4f} seconds!")
 
     # set flag    
     isProcessingScript=False
