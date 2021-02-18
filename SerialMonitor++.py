@@ -809,8 +809,19 @@ def showScriptLine(linenr):
     popupWait.update()
     popupWait.scriptText.oldlinenr=linenr
 
+isProcessingScript=False
+
 def popup_ScriptProcess(event=None):
+    global isProcessingScript
     popupWait=win.popupWait
+
+    # set flag
+    isProcessingScript = not isProcessingScript
+
+    # check if user interupted script
+    if not isProcessingScript: 
+        pyi.stopScript()
+        return
 
     #disable yellow cursor from previous runs
     popupWait.scriptText.tag_config(f"{popupWait.scriptText.oldlinenr}",background='white')
@@ -828,6 +839,9 @@ def popup_ScriptProcess(event=None):
     #setup script environment
     # callback handler so we can follow which line the script is running
     pyi.setCallbackHandler(showScriptLine)
+
+    #rename run button so we can use it as stop button
+    popupWait.cmdRun.configure(text="Stop")
 
     #  error handler should output to striptErrors widget instead of console
     def errhndlr(errStack):
@@ -849,10 +863,17 @@ def popup_ScriptProcess(event=None):
     scriptStart=time.time()
     runSuccess=pyi.runScript(delaytime=delayTime)
     scriptDuration=time.time()-scriptStart
-    if runSuccess:
+    if runSuccess and isProcessingScript:
         msgbox=popup_ShowMessage(type="info",title="Script finished", message=f"Script '{popupWait.scriptname}' finished in {scriptDuration:.4f} seconds!")
 
-    #popupWait.varInfo.set(f"Finished '{popupWait.scriptname}' in {scriptDuration:.4f} seconds.")
+    if runSuccess and not isProcessingScript:
+        msgbox=popup_ShowMessage(type="info",title="Script stopped", message=f"Script '{popupWait.scriptname}' interupted after {scriptDuration:.4f} seconds!")
+
+    # set flag    
+    isProcessingScript=False
+
+    #rename stop button so we can use it as run button
+    popupWait.cmdRun.configure(text="Run")
 
 
 def clearText():
@@ -997,7 +1018,7 @@ def readSerial():
             try:
                 if (serialPort.in_waiting>0): #if incoming bytes are waiting to be read from the serial input buffer
                     data_bytes=serialPort.read(serialPort.in_waiting)
-                    print (f"databytes:{data_bytes}")
+                    #print (f"databytes:{data_bytes}")
 
                     #store in history
                     histReceived.append((time.time(),data_bytes,tk.LEFT))
