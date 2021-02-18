@@ -397,9 +397,15 @@ def addSystemVar(varName,varValue):
 def addSystemFunction(funcName,function,argTypeList):
     systemDefs[funcName]=(function,argTypeList)
 
+linenr=0
+def stopScript():
+    global linenr
+    linenr=len(orgscriptlines)
+
 def runScript(scriptpath=None,delaytime=0):
     global orgscriptlines
     global errorStack
+    global linenr
     # clear errorStack
     errorStack=[]
 
