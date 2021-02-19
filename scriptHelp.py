@@ -1,0 +1,41 @@
+import os
+import tkinter as tk
+from tkinter import font as tkf
+from tkRTFText import RTFText 
+
+scriptpath= os.path.realpath(__file__) 
+scriptdir = os.path.dirname(scriptpath)
+win=None
+
+def init(rootWin):
+    global win
+    win=rootWin
+
+def show():
+    with open(os.path.join(scriptdir,"scriptHelp.txt"), "r") as reader: # open file
+        msg=reader.readlines()    
+
+    popupMdown = tk.Toplevel(win)
+    popupMdown.transient(win.popupWait) 
+    popupMdown.wm_title("Script Language Help")
+    #backcolor=rootWin["bg"]#"#DDDDDD"
+    popupMdown.configure(background='white')
+
+    # footer
+    footerframe=tk.Frame(popupMdown,height=12,bg='white')
+    footerframe.pack(side=tk.BOTTOM,fill='x',expand=False,padx=(0,0),pady=(0,0))
+    popupMdown.cmdOk = tk.Button(footerframe, text="OK",command=popupMdown.destroy,width=10)
+    popupMdown.cmdOk.pack(side=tk.RIGHT,padx=(8,8),pady=(8,8))
+    popupMdown.cmdOk.configure(relief=tk.FLAT)
+
+    # script area
+    #popupMdown.varScript=tk.StringVar() #use textInput.get()
+    textframe=tk.Frame(popupMdown,height=12,bg='white')
+    textframe.pack(side=tk.TOP,fill='both',expand=True,padx=(0,0),pady=(0,0))
+    popupMdown.helpText=RTFText(textframe,bg='white',relief=tk.SOLID)
+    popupMdown.helpText.pack(side=tk.LEFT,expand=True,padx=(2,0),pady=(2,0),fill=tk.BOTH)
+    popupMdown.helpText.configure(wrap=tk.NONE)
+ 
+    popupMdown.helpText.setRTF(msg,pad=(8,8),bg='white', font=tkf.Font(family='Terminal', weight = 'normal', size = 9))
+
+    popupMdown.grab_set()

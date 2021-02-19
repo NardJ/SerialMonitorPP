@@ -1,0 +1,40 @@
+# aliases  for test routines
+var cls    ">L 1"
+var fillH  ">F ."
+var fillV  ">G ."    
+var shiftL ">0 ."
+var shiftR ">1 ."
+var shiftU ">2 ."
+var shiftD ">3 ."
+var text   ">S %r %r &" 
+
+print "Running..."
+
+print "Clear screen"
+send  cls
+
+print "Test speed"
+var msg = ">"
+for y 0 24 {
+  for x 0 40 {
+    # send message
+    send (text%(x,y))
+    # check if received
+    var rec = received()
+    while rec==(text%(x,y)) {
+      print rec
+      send (text%(x,y))
+    }
+    # send ok
+    # send 'OK'
+  }
+}
+
+
+print "FINISHED"
+
+
+
+
+
+
