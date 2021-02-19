@@ -6,6 +6,7 @@ import os
 import time
 import messagePopup
 import scriptHelp
+import bytes2String
 
 win=None
 send=None
@@ -216,8 +217,17 @@ def process(event=None):
     pyi.setErrorHandler(errhndlr)
     #  reroute print to infobos
     def print2InfoBox(msg):
-        popupWait.varInfo.set(msg)
+        popupWait.varInfo.set(bytes2String.ascii(msg.encode('utf-8')))
     pyi.addSystemFunction('print',print2InfoBox,[[str,int,bool,float],])
+    def printHex2InfoBox(msg):        
+        popupWait.varInfo.set(bytes2String.hex(msg.encode('utf-8')))
+    pyi.addSystemFunction('printh',printHex2InfoBox,[[str,int,bool,float],])
+    def printDec2InfoBox(msg):
+        popupWait.varInfo.set(bytes2String.dec(msg.encode('utf-8')))
+    pyi.addSystemFunction('printd',printDec2InfoBox,[[str,int,bool,float],])
+    def printRaw2InfoBox(msg):
+        popupWait.varInfo.set(bytes2String.raw(msg.encode('utf-8')))
+    pyi.addSystemFunction('printr',printRaw2InfoBox,[[str,int,bool,float],])
     #  add send (over serial) command
     pyi.addSystemFunction('send',send,[[str,],])
     #  add received var (to be updated each x msecs)

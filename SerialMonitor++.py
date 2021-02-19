@@ -6,6 +6,7 @@ from tkinter import messagebox
 from tooltip import CreateToolTip
 import scriptWindow
 import messagePopup
+import bytes2String
 
 import serial
 import re 
@@ -494,34 +495,11 @@ def initWindow():
     # load settings
     loadSettings()
 
-def bytes2RawStr(data_bytes):
-    return f"{data_bytes}"[2:-1]
-def bytes2AsciiStr(data_bytes):
-    try:
-        data_str = data_bytes.decode('utf-8') #read the bytes and convert from binary array to ASCII
-        data_str=data_str.replace('\b', "\\b") 
-        data_str=data_str.replace('\t', "\\t") 
-        data_str=data_str.replace('\n', "\\n\n") 
-        data_str=data_str.replace('\f', "\\f") 
-        data_str=data_str.replace('\r', "\\r") 
-    except UnicodeDecodeError as e:
-        print (e)
-        data_str=bytes2RawStr(data_bytes)
-    return data_str
-def bytes2HexStr(data_bytes):
-    data_str=' '.join(format(x, '02X') for x in data_bytes)
-    data_str=data_str.replace('0A', "0A\n") 
-    return data_str
-def bytes2DecStr(data_bytes):
-    data_str=' '.join(format(x, '3') for x in data_bytes)
-    data_str=data_str.replace('  10', "  10\n") 
-    return data_str
-
 def popup_AllReceiveReps(receiveIdx):
     _,data_bytes,_=histReceived[receiveIdx]
 
     # get ascii, remove last EOL and respace each char
-    data_str_ascii=bytes2AsciiStr(data_bytes).strip()
+    data_str_ascii=bytes2String.ascii(data_bytes).strip()
     new_str_ascii=""
     for c in data_str_ascii: new_str_ascii+="   "+c
     new_str_ascii=new_str_ascii.replace(" \   b","\\b")    
@@ -532,11 +510,11 @@ def popup_AllReceiveReps(receiveIdx):
     data_str_ascii=new_str_ascii[1:]
 
     # get hex remove last EOL and respace each char
-    data_str_hex=bytes2HexStr(data_bytes).strip()
+    data_str_hex=bytes2String.hex(data_bytes).strip()
     data_str_hex=" "+"  ".join(data_str_hex.split(" "))
 
     # get dec remove last EOL but keep leading space if first numbers <=99 
-    data_str_dec=bytes2DecStr(data_bytes)
+    data_str_dec=bytes2String.dec(data_bytes)
     data_str_dec=" "+data_str_dec.strip() if data_str_dec[0]==" " else data_str_dec.strip()
 
     # construct dialog
@@ -637,10 +615,10 @@ def appendReceived(receiveIdx):
 
     # retreive text
     win.textReceived.config(state=tk.NORMAL)
-    if (win.varOutType.get()=="ASCII"):data_str=bytes2AsciiStr(data_bytes)
-    if (win.varOutType.get()=="HEX"): data_str=bytes2HexStr(data_bytes)
-    if (win.varOutType.get()=="DEC"): data_str=bytes2DecStr(data_bytes)
-    if (win.varOutType.get()=="AUTO"):data_str=bytes2RawStr(data_bytes)
+    if (win.varOutType.get()=="ASCII"):data_str=bytes2String.ascii(data_bytes)
+    if (win.varOutType.get()=="HEX"): data_str=bytes2String.hex(data_bytes)
+    if (win.varOutType.get()=="DEC"): data_str=bytes2String.dec(data_bytes)
+    if (win.varOutType.get()=="AUTO"):data_str=bytes2String.raw(data_bytes)
 
     #check if string is closed with \n
     if data_str[-1:]!='\n': data_str+='\n'
