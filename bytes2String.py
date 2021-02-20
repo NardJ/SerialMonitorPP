@@ -10,7 +10,7 @@ def ascii(data_bytes):
         data_str=data_str.replace('\r', "\\r") 
     except UnicodeDecodeError as e:
         print (e)
-        data_str=bytes2RawStr(data_bytes)
+        data_str=raw(data_bytes)
     return data_str
 def hex(data_bytes):
     data_str=' '.join(format(x, '02X') for x in data_bytes)

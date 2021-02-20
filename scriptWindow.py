@@ -17,7 +17,10 @@ def close():
     win.popupWait.destroy()
 
 def received():
-    return receive()
+    rec = receive()
+    print (f"Rec: {rec} of type {type(rec)}")
+    if rec==None: rec==['']
+    return rec
 
 def show(rootWin,scriptpath,rmtSend,rmtReceive):
     global win,send,receive
@@ -60,8 +63,8 @@ def show(rootWin,scriptpath,rmtSend,rmtReceive):
     lb.pack(side=tk.LEFT)
 
     popupWait.varDelay=tk.StringVar()
-    popupWait.delayList=("No delay","0.1 sec","0.5 sec","1 sec","2 sec","5 sec")
-    popupWait.delayTimes=(0,0.1,0.5,1.0,2.0,5.0)
+    popupWait.delayList=("No delay","0.01 sec","0.1 sec","0.5 sec","1 sec","2 sec","5 sec")
+    popupWait.delayTimes=(0,0.01,0.1,0.5,1.0,2.0,5.0)
     popupWait.varDelay.set('0.5 sec')
     ddDelay=tk.OptionMenu(footerframe,popupWait.varDelay,*popupWait.delayList)
     ddDelay.pack(side=tk.LEFT,padx=(3,0))
@@ -76,6 +79,12 @@ def show(rootWin,scriptpath,rmtSend,rmtReceive):
     ddDelay.pack(side=tk.LEFT,padx=(3,0))
     ddDelay.configure(bd='0p')
     ddDelay.configure(highlightthickness=0)
+
+    popupWait.varSkipVars=tk.BooleanVar(value=True)
+    cbSkipVars=tk.Checkbutton(footerframe,text="Skip Vars:",variable=popupWait.varSkipVars)
+    cbSkipVars.configure(background=footerbgcolor,activebackground=footersgcolor,fg=footerfgcolor,activeforeground=footerfgcolor,highlightbackground=footerbgcolor,selectcolor=footerbgcolor)
+    cbSkipVars.pack(side=tk.LEFT)
+    cbSkipVars.configure(relief=tk.FLAT)
 
     popupWait.cmdRun = tk.Button(footerframe, text="Run",command= process)
     popupWait.cmdRun.pack(side=tk.RIGHT)
@@ -217,17 +226,26 @@ def process(event=None):
     pyi.setErrorHandler(errhndlr)
     #  reroute print to infobos
     def print2InfoBox(msg):
-        popupWait.varInfo.set(bytes2String.ascii(msg.encode('utf-8')))
-    pyi.addSystemFunction('print',print2InfoBox,[[str,int,bool,float],])
+        print (f"msg type {type(msg)}")
+        if isinstance(msg,bytes): 
+            popupWait.varInfo.set(bytes2String.raw(msg).strip())
+        elif isinstance(msg,str):    
+            popupWait.varInfo.set(msg.strip())
+        else:    
+            popupWait.varInfo.set(msg)
+    pyi.addSystemFunction('print',print2InfoBox,[[str,int,bool,float,bytes],])
+    def printAscii2InfoBox(msg):
+        popupWait.varInfo.set(bytes2String.ascii(msg).strip())
+    pyi.addSystemFunction('printa',printAscii2InfoBox,[[bytes],])
     def printHex2InfoBox(msg):        
-        popupWait.varInfo.set(bytes2String.hex(msg.encode('utf-8')))
-    pyi.addSystemFunction('printh',printHex2InfoBox,[[str,int,bool,float],])
+        popupWait.varInfo.set(bytes2String.hex(msg).strip())
+    pyi.addSystemFunction('printh',printHex2InfoBox,[[bytes],])
     def printDec2InfoBox(msg):
-        popupWait.varInfo.set(bytes2String.dec(msg.encode('utf-8')))
-    pyi.addSystemFunction('printd',printDec2InfoBox,[[str,int,bool,float],])
+        popupWait.varInfo.set(bytes2String.dec(msg).strip())
+    pyi.addSystemFunction('printd',printDec2InfoBox,[[bytes],])
     def printRaw2InfoBox(msg):
-        popupWait.varInfo.set(bytes2String.raw(msg.encode('utf-8')))
-    pyi.addSystemFunction('printr',printRaw2InfoBox,[[str,int,bool,float],])
+        popupWait.varInfo.set(f"{msg}")
+    pyi.addSystemFunction('printr',printRaw2InfoBox,[[bytes],])
     #  add send (over serial) command
     pyi.addSystemFunction('send',send,[[str,],])
     #  add received var (to be updated each x msecs)
@@ -235,7 +253,7 @@ def process(event=None):
 
     #run script
     scriptStart=time.time()
-    runSuccess=pyi.runScript(delaytime=delayTime)
+    runSuccess=pyi.runScript(delaytime=delayTime,skipVarDelay=popupWait.varSkipVars.get())
     scriptDuration=time.time()-scriptStart
     if runSuccess and isProcessingScript:
         msgbox=messagePopup.show(win,type="info",title="Script finished", message=f"Script '{popupWait.scriptname}' finished in {scriptDuration:.4f} seconds!")

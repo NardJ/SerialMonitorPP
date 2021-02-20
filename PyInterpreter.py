@@ -316,6 +316,7 @@ def strIsNumber(strEval):
 '''
 def evalArgument(varis,calcToken,linenr):
     try:
+        #print (f"{calcToken} -> {eval(calcToken,None,varis)}")
         return eval(calcToken,None,varis)
     except Exception as e:
         #print (f"Error evalStrArgument: {calcToken} is not a valid calculation.")   
@@ -341,6 +342,7 @@ def typeToken(arg):
     if isinstance(arg,bool): return bool
     if isinstance(arg,int): return int
     if isinstance(arg,float): return float
+    if isinstance(arg,bytes): return bytes
     return None    
 
 def checkArgs(lineNr,statement,tokens,tAllowedTypes):
@@ -402,7 +404,7 @@ def stopScript():
     global linenr
     linenr=len(orgscriptlines)
 
-def runScript(scriptpath=None,delaytime=0):
+def runScript(scriptpath=None,delaytime=0, skipVarDelay=True):
     global orgscriptlines
     global errorStack
     global linenr
@@ -468,7 +470,7 @@ def runScript(scriptpath=None,delaytime=0):
                             errors+=1
                     # handle command
                     if not errors:
-                        if cmd=="var"      and checkArgs(linenr,statement,args,[[str],[str,float,bool,int],]):
+                        if cmd=="var"      and checkArgs(linenr,statement,args,[[str],[str,float,bool,int,bytes],]):
                             varis[args[0]]=args[1]                             # add variable to variable list
                             #print (f"cmd==var:{args}")                        
                             #print (f"  varis:{varis}")                        
@@ -506,11 +508,13 @@ def runScript(scriptpath=None,delaytime=0):
                         else:
                             logError(linenr,statement,arg,f"CmdError: Command '{cmd}'not valid.")
                             linenr=len(scriptlines)
+                    #if we have no remark line we wait for delay so user can keep up.      
+                    if not (cmd=="var" and skipVarDelay):
+                        time.sleep(delaytime)
                 # if tokens 
             # for statement in statements
         # if statements           
         linenr+=1
-        time.sleep(delaytime)
     # while linenr<len(scriptlines)  
     if errorStack:
         printErrorStack()

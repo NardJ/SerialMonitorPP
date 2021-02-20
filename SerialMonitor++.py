@@ -560,7 +560,7 @@ def tokenIsString(token):
 
 def received():
     if len(histReceived)>0:
-        msg=histReceived[len(histReceived)-1][1].decode('utf-8').strip()
+        msg=histReceived[len(histReceived)-1][1]
         #print (f"msg:{msg}'")
         return msg # histReceived contains tuples (timestamp, message,'right')
     else:
