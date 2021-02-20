@@ -26,10 +26,10 @@ def show():
     footerframe=tk.Frame(popupMdown,height=12,bg='white')
     footerframe.pack(side=tk.BOTTOM,fill='x',expand=False,padx=(0,0),pady=(0,0))
     #   resize grip
-    resizeGrip=ttk.Sizegrip(footerframe,style='TSizegrip')
+    resizeGrip=ttk.Sizegrip(footerframe,style='popupMdown.TSizegrip')
     resizeGrip.place(rely=1.0, relx=1.0, x=0, y=0, anchor=tk.SE)
     popupMdown.style = ttk.Style()
-    popupMdown.style.configure('TSizegrip', background='white')
+    popupMdown.style.configure('popupMdown.TSizegrip', background='white')
     #   OK button
     popupMdown.cmdOk = tk.Button(footerframe, text="OK",command=popupMdown.destroy,width=10)
     popupMdown.cmdOk.pack(side=tk.RIGHT,padx=(8,8),pady=(8,8))

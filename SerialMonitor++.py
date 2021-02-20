@@ -414,11 +414,11 @@ def initWindow():
     win.btnReconnect.bind('<ButtonRelease-1>',reconnect)
 
     #   resize grip
-    resizeGrip=ttk.Sizegrip(connectframe,style='TSizegrip')
+    resizeGrip=ttk.Sizegrip(connectframe,style='win.TSizegrip')
     #resizeGrip.pack(side=tk.RIGHT,anchor=tk.SE)
     resizeGrip.place(rely=1.0, relx=1.0, x=0, y=0, anchor=tk.SE)
     resizeGrip.style = ttk.Style()
-    resizeGrip.style.configure('TSizegrip', background=footerbgcolor)
+    resizeGrip.style.configure('win.TSizegrip', background=footerbgcolor)
 
     # draw sep
     #separator = ttk.Separator(orient='horizontal').pack(side=tk.BOTTOM,fill='x',pady=(8,0))

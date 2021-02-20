@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import font as tkf
 from tkinter import ttk
-import PyInterpreter as pyi
+import PyInterpreter.PyInterpreter as pyi
 import os
 import time
 import messagePopup
@@ -53,7 +53,7 @@ def show(rootWin,scriptpath,rmtSend,rmtReceive):
     lbInfo.pack(side=tk.LEFT,padx=8,fill=tk.X,expand=True)
 
     #   resize grip
-    resizeGrip=ttk.Sizegrip(popupWait,style='TSizegrip')
+    resizeGrip=ttk.Sizegrip(popupWait,style='popupWait.TSizegrip')
     resizeGrip.place(rely=1.0, relx=1.0, x=0, y=0, anchor=tk.SE)
 
     # draw sep
