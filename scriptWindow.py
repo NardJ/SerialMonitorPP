@@ -52,6 +52,10 @@ def show(rootWin,scriptpath,rmtSend,rmtReceive):
     lbInfo = tk.Label(headerframe, anchor=tk.W,textvariable=popupWait.varInfo)
     lbInfo.pack(side=tk.LEFT,padx=8,fill=tk.X,expand=True)
 
+    #   resize grip
+    resizeGrip=ttk.Sizegrip(popupWait,style='TSizegrip')
+    resizeGrip.place(rely=1.0, relx=1.0, x=0, y=0, anchor=tk.SE)
+
     # draw sep
     separator = ttk.Separator(popupWait,orient='horizontal').pack(side=tk.TOP,fill='x',pady=8)
 
@@ -111,7 +115,7 @@ def show(rootWin,scriptpath,rmtSend,rmtReceive):
     popupWait.tabs.add(popupWait.scriptTab,text=" Script ")#,command=showScript)
     popupWait.errorsTab=ttk.Frame(popupWait.tabs)
     popupWait.tabs.add(popupWait.errorsTab,text=" Errors ")#,command=showErrors)
-    popupWait.tabs.pack(side=tk.TOP, fill=tk.X,padx=(8,8),pady=(2,0))
+    popupWait.tabs.pack(side=tk.TOP, fill=tk.BOTH,expand=True,padx=(8,8),pady=(2,0))
 
     # script area
     #popupWait.varScript=tk.StringVar() #use textInput.get()

@@ -404,7 +404,7 @@ def initWindow():
     #   win.btnReconnect=tk.Button(connectframe,text="Reconnect", command=reconnect)
     win.btnReconnect = tk.Label(connectframe, text="Reconnect", relief=tk.FLAT,background=footerbgcolor,fg=footerfgcolor,bd=0,padx=8,pady=6)
     win.btnReconnect.configure(background=footerbgcolor,activebackground=footersgcolor,foreground=footerfgcolor,activeforeground=footerfgcolor,highlightbackground=footerbgcolor)
-    win.btnReconnect.pack(side=tk.RIGHT,padx=(3,0),pady=(1,0))
+    win.btnReconnect.pack(side=tk.RIGHT,padx=(3,6),pady=(1,0))# some space at right for resizeGrip
     win.btnReconnect.configure(relief=style)
     #Needed because label does not have these events 
     win.btnReconnect.bgLeave=footerbgcolor
@@ -412,6 +412,13 @@ def initWindow():
     win.btnReconnect.bind('<Enter>',btnReconnect_enter)
     win.btnReconnect.bind('<Leave>',btnReconnect_leave)
     win.btnReconnect.bind('<ButtonRelease-1>',reconnect)
+
+    #   resize grip
+    resizeGrip=ttk.Sizegrip(connectframe,style='TSizegrip')
+    #resizeGrip.pack(side=tk.RIGHT,anchor=tk.SE)
+    resizeGrip.place(rely=1.0, relx=1.0, x=0, y=0, anchor=tk.SE)
+    resizeGrip.style = ttk.Style()
+    resizeGrip.style.configure('TSizegrip', background=footerbgcolor)
 
     # draw sep
     #separator = ttk.Separator(orient='horizontal').pack(side=tk.BOTTOM,fill='x',pady=(8,0))
