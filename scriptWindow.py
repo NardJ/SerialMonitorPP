@@ -230,7 +230,6 @@ def process(event=None):
     pyi.setErrorHandler(errhndlr)
     #  reroute print to infobos
     def print2InfoBox(msg):
-        print (f"msg type {type(msg)}")
         if isinstance(msg,bytes): 
             popupWait.varInfo.set(bytes2String.raw(msg).strip())
         elif isinstance(msg,str):    
