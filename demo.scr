@@ -1,9 +1,14 @@
 ######################################################################
 # Press [Help] for more info about this scripting language.							   #
 #								     #
-# For SerialMonitor++ two extra commands are implemented:							     #
+# For SerialMonitor++ a few extra commands are implemented:							   #
 #   send [message]	: Lets you send a message over Serial							     #
 #   received()	    : Containts last received message from Serial			  #
+#   print          : Prints expression or var to Status line above   #
+#   printa         : Prints bytes (from received) as ascii           #
+#   printh         : Prints bytes (from received) as hex             #
+#   printd         : Prints bytes (from received) as decimals        #
+#   printr         : Prints bytes (from received) as bytes           #
 #====================================================================#
 # To test setup your arduino board to echo all serial								     #
 #   void setup() {								     #
@@ -18,7 +23,28 @@
 ######################################################################
 
 send ('Hello World')
-print received()
+var a received()
+
+print 3
+print 2
+print 1
+
+print "auto:"
+print a
+
+print "raw :"
+printr a
+
+print "dec :"
+printd a
+
+print "hex :"
+printh a
+
+print "asci:"
+printa a
+
+
 
 
 
