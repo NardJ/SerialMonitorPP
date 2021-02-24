@@ -111,44 +111,57 @@ def send2Next(val=None):
     else:    
         win.varSent.set(histSent[histIdx])
 
-def send(val=None):
-    print ("[SEND]")
+def rawSend(val,mode='A',endMessage="CR & NL"):
     if not isConnected(): return
-    global histSent,histIdx
-    # check if val has value to send
-    if not (val==None): 
-        if isinstance(val,str):
-            print ("[send] updated entry value")
-            win.varSent.set(val)   
-    # otherwise we retreive this from entry box
-    string=win.varSent.get()
-    print (f"win.varSent.get():{win.varSent.get()}")
-    print (f"type(val):{type(val)}")
 
-    # store in history
-    histSent.append(string)
-    histSent=histSent[-100:]
-    histIdx=len(histSent)
+    #convert from hex/dec to ascii
+    out=''
+    if mode=='A':
+        out=val
+    if mode=='D':
+        decs=val.split(' ')    
+        for dec in decs:
+            if not dec=='':
+                out=out+chr(int(dec))
+    if mode=='H':
+        hexs=val.split(' ')    
+        for hex in hexs:
+            if not hex=='':
+                out=out+chr(int(hex,16))
 
     # add string terminator
     endMessage=win.varEndMessage.get()
-    if (endMessage=="Newline"):  string+= '\n' 
-    if (endMessage=="Carriage"): string+= '\r'
-    if (endMessage=="CR & NL"):  string+= '\r\n'
-    if (endMessage=="Endstring"):string+= '\0'
-    # send message over serialPort
-    tStart=time.time()
-    serialPort.write(string.encode('utf-8'))
+    if (endMessage=="Newline"):  out+= '\n' 
+    if (endMessage=="Carriage"): out+= '\r'
+    if (endMessage=="CR & NL"):  out+= '\r\n'
+    if (endMessage=="Endstring"):out+= '\0'
+
+    serialPort.write(out.encode('utf-8'))
     serialPort.flush()
-    tDelta=time.time()-tStart    
+    return out
+
+def guiSend(event=None):
+    #print ("[SEND]")
+    if not isConnected(): return
+    global histSent,histIdx
+
+    # retreive from entry box
+    mode=win.outFormat.outTexts[win.outFormat.outIdx]
+    endMessage=win.varEndMessage.get()
+    text=win.varSent.get()
+    #print (f'Text {text}')
+    # send and clear
+    string=rawSend(text,mode,endMessage)
+    win.varSent.set("")
+
+    # store in history
+    histSent.append(text)
+    histSent=histSent[-100:]
+    histIdx=len(histSent)
 
     # display in log if needed
     histReceived.append((time.time(),string.encode(),tk.RIGHT))
     appendReceived(len(histReceived)-1)  
-
-    # clear sent entry widget
-    print(f"Sent:'{string.encode('utf-8')}' in {round(tDelta*1_000_000,0)} usecs")
-    win.varSent.set("")
 
 def guiEnable():    
     win.textReceived.configure(bg="white")
@@ -204,7 +217,11 @@ def savedInputMUp(buttonIdx):
     if delta<=longPressSecs:
         win.varSent.set(win.btnSavedInput[buttonIdx]["text"])
         buttonTimes[buttonIdx]=None
-        send()
+        # set outformat
+        win.outIdx=win.btnSavedInput[buttonIdx].outFormat-1
+        changeOutFormat()
+        # send
+        guiSend()
 def saveInputLongpressCheck():
     if not isConnected(): return
     for buttonIdx in range(nrSaveButtons):
@@ -212,6 +229,7 @@ def saveInputLongpressCheck():
             delta=time.time()-buttonTimes[buttonIdx]
             if delta>longPressSecs:
                 win.btnSavedInput[buttonIdx].configure(text=win.varSent.get())
+                win.btnSavedInput[buttonIdx].outFormat=win.outFormat.outIdx
                 win.btnSavedInput[buttonIdx].tooltip.close()
                 win.btnSavedInput[buttonIdx].tooltip = CreateToolTip(win.btnSavedInput[buttonIdx], "Click to copy \nto entry box.")
                 buttonTimes[buttonIdx]=None
@@ -230,6 +248,7 @@ def saveSettings():
         for buttonIdx in range(nrSaveButtons):
             line=win.btnSavedInput[buttonIdx]["text"]
             writer.write(line+'\n')
+            writer.write(f"{win.btnSavedInput[buttonIdx].outFormat}\n")
 
 def loadSettings():
     settingsfilepath=os.path.join(scriptdir,"SerialMonitor++.ini")
@@ -247,6 +266,7 @@ def loadSettings():
             win.varBaudrate.set(int(reader.readline().strip()))
             for buttonIdx in range(nrSaveButtons):
                 win.btnSavedInput[buttonIdx].configure(text=reader.readline().strip())
+                win.btnSavedInput[buttonIdx].outFormat=int(reader.readline().strip())
     except Exception as e:
         print (f"Error reading settings:{e}")
 
@@ -268,13 +288,18 @@ def sendScript(arg=None):
     	filetypes=[
     		("Script files", "*.scr"),
     		])
-    print(rep)
+    #print(rep)
     scriptpath=rep[0]                                   # use first file in list
     if (scriptpath==None): return                       # exit if user selected no file
     guiEnable()
-    scriptWindow.show(win,scriptpath,send,received)
+    scriptWindow.show(win,scriptpath,rawSend,received)
     guiDisable()
-    
+
+def changeOutFormat():
+    win.outFormat.outIdx+=1
+    if win.outFormat.outIdx==len(win.outFormat.outTexts): win.outFormat.outIdx=0
+    win.outFormat.configure(text=win.outFormat.outTexts[win.outFormat.outIdx])
+
 def initWindow():
     global win
     global portList
@@ -296,16 +321,27 @@ def initWindow():
     #lfont = tkf.Font(family='Consolas', weight = 'bold', size = 9)
 
     inputframe=tk.Frame(win,padx=4,pady=0,background=backcolor)
-    inputframe.pack(fill='x',padx=(4,0),pady=(4,0))
+    inputframe.pack(fill='x',padx=(3,0),pady=(4,0))
+
+    win.pixelVirtual = tk.PhotoImage(width=1, height=1)
+    win.outFormat =tk.Button(inputframe, image=win.pixelVirtual,
+                            text='A',command=changeOutFormat,height=1,width=4,compound=tk.CENTER)
+    win.outFormat.pack(side=tk.LEFT,padx=(0,3),pady=(1,1),fill=tk.Y)
+    win.outFormat.configure(relief=style)
+    win.outFormat.outIdx=0
+    win.outFormat.outTexts=('A','H','D')
+    win.outFormat.tooltip = CreateToolTip(win.outFormat, "Specify if you \nentered ascii \nor hex/dec codes.")
+
     # INPUT HEADER
     #  add frame so create a margin to left and right of entered text
     win.entryframe=tk.Frame(inputframe,background=backcolor,border=1,highlightthickness=0,relief=tk.SOLID)
     win.entryframe.pack(side=tk.LEFT,padx=(0,3),ipady=3,expand=True,fill=tk.X)
+
     win.varSent=tk.StringVar() #use win.varSent.get()
     win.textentry=tk.Entry(win.entryframe,background=backcolor,textvariable=win.varSent,bd=0,border=0,highlightthickness=0)
-    win.textentry.pack(side=tk.LEFT,padx=(0,3),ipady=0,expand=True,fill=tk.X)
-    win.textentry.bind('<Return>', send)
-    win.textentry.bind('<KP_Enter>', send)
+    win.textentry.pack(side=tk.LEFT,padx=(4,3),ipady=0,expand=True,fill=tk.X)
+    win.textentry.bind('<Return>', guiSend)
+    win.textentry.bind('<KP_Enter>', guiSend)
     win.textentry.bind('<Up>', send2Prev)
     win.textentry.bind('<Down>', send2Next)
     win.textentry.configure(bg="lightgrey")
@@ -324,8 +360,9 @@ def initWindow():
     ddEndMessage.configure(bd='1p')
     ddEndMessage.configure(highlightthickness=0)
     ddEndMessage.configure(bg='white')
+    ddEndMessage.tooltip = CreateToolTip(ddEndMessage, "Automatically close each \nmessage with closing chars.")
 
-    sendbutton=tk.Button(inputframe,text="Send", command=send)
+    sendbutton=tk.Button(inputframe,text="Send", command=guiSend)
     sendbutton.pack(side=tk.RIGHT,padx=(2,2))
     sendbutton.configure(relief=style)
 
@@ -340,10 +377,11 @@ def initWindow():
     win.openscript.configure(image=img)
     win.openscript.pack(side=tk.LEFT,padx=(3,0))
     win.openscript.configure(relief=style)
+    win.openscript.tooltip = CreateToolTip(win.openscript, "Run a script to issue multiple \ncommand and react to \nincoming messages.")
 
     win.btnSavedInput=nrSaveButtons*[None]
     for i in range (nrSaveButtons):
-        win.btnSavedInput[i]=tk.Button(inputsframe,text=f"...",relief=tk.FLAT,width=10,anchor='w')
+        win.btnSavedInput[i]=tk.Button(inputsframe,text=f"...",relief=tk.FLAT,width=6,anchor='w')
         win.btnSavedInput[i].bind('<Button-1>',lambda event,arg=i: savedInputMDown(arg))
         win.btnSavedInput[i].bind('<ButtonRelease-1>',lambda event,arg=i: savedInputMUp(arg))
         win.btnSavedInput[i].pack(side=tk.LEFT,padx=(2,2))
