@@ -21,17 +21,20 @@ for y 0 24 {
     send (text%(x,y))
     # check if received
     var rec = received()
+    print rec
     while rec==(text%(x,y)) {
       print rec
       send (text%(x,y))
     }
     # send ok
-    # send 'OK'
+    send 'OK'
   }
 }
 
 
 print "FINISHED"
+
+
 
 
 
