@@ -246,13 +246,16 @@ def saveInputLongpressCheck():
         if not buttonTimes[buttonIdx]==None: 
             delta=time.time()-buttonTimes[buttonIdx]
             if delta>longPressSecs:
+                outFormat=win.outFormat.outIdx
+                outString=win.varSent.get()
                 win.btnSavedInput[buttonIdx].configure(text=win.varSent.get())
-                win.btnSavedInput[buttonIdx].outString=win.varSent.get()
-                win.btnSavedInput[buttonIdx].outFormat=win.outFormat.outIdx
+                win.btnSavedInput[buttonIdx].outString=outString
+                win.btnSavedInput[buttonIdx].outFormat=outFormat
                 #print (f"long press {win.outFormat.outIdx} '{win.varSent.get()}'")
                 win.btnSavedInput[buttonIdx].tooltip.close()
-                win.btnSavedInput[buttonIdx].tooltip = CreateToolTip(win.btnSavedInput[buttonIdx], f"Click to send.\nRight button to \nchange label.\nMiddle button to\nclear button.")
+                win.btnSavedInput[buttonIdx].tooltip = CreateToolTip(win.btnSavedInput[buttonIdx], f"{win.outFormat.outTexts[outFormat]}:'{outString}'\n\nClick to send.\nRight button to \nchange label.\nMiddle button to\nclear button.")
                 buttonTimes[buttonIdx]=None
+
 def saveSettings():
     settingsfilepath=os.path.join(scriptdir,"SerialMonitor++.ini")
     with open(settingsfilepath,'w') as writer:
@@ -293,10 +296,12 @@ def loadSettings():
             for buttonIdx in range(nrSaveButtons):
                 labelStr=reader.readline().strip()
                 win.btnSavedInput[buttonIdx].configure(text=labelStr)
-                win.btnSavedInput[buttonIdx].outString=reader.readline().strip()
-                win.btnSavedInput[buttonIdx].outFormat=int(reader.readline().strip())
+                outStr=reader.readline().strip()
+                win.btnSavedInput[buttonIdx].outString=outStr
+                outFormat=int(reader.readline().strip())
+                win.btnSavedInput[buttonIdx].outFormat=outFormat
                 if labelStr!='...':
-                    win.btnSavedInput[buttonIdx].tooltip = CreateToolTip(win.btnSavedInput[buttonIdx], f"Click to send.\nRight button to \nchange label.\nMiddle button to\nclear button.")
+                    win.btnSavedInput[buttonIdx].tooltip = CreateToolTip(win.btnSavedInput[buttonIdx], f"{win.outFormat.outTexts[outFormat]}:'{outStr}'\n\nClick to send.\nRight button to \nchange label.\nMiddle button to\nclear button.")
 
     except Exception as e:
         print (f"Error reading settings:{e}")
